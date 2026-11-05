@@ -1,0 +1,61 @@
+
+# Cerinta 2 - Adunarea si inmultirea numerelor mari
+
+def adunare(a, b):
+    a = a.zfill(max(len(a), len(b)))
+    b = b.zfill(len(a))
+
+    transport = 0
+    rezultat = ""
+
+    for i in range(len(a) - 1, -1, -1):
+        suma = int(a[i]) + int(b[i]) + transport
+        rezultat = str(suma % 10) + rezultat
+        transport = suma // 10
+
+    if transport:
+        rezultat = str(transport) + rezultat
+
+    return rezultat.lstrip("0") or "0"
+
+
+def inmultire(a, b):
+    rezultat = [0] * (len(a) + len(b))
+
+    for i in range(len(a) - 1, -1, -1):
+        transport = 0
+
+        for j in range(len(b) - 1, -1, -1):
+            poz = i + j + 1
+            produs = int(a[i]) * int(b[j])
+            total = produs + rezultat[poz] + transport
+
+            rezultat[poz] = total % 10
+            transport = total // 10
+
+        rezultat[i] += transport
+
+    return "".join(str(c) for c in rezultat).lstrip("0") or "0"
+
+
+try:
+    with open("numere.txt", "r") as fisier:
+        numere = [linie.strip() for linie in fisier]
+
+    if len(numere) != 2:
+        raise ValueError("Fisierul trebuie sa contina doua numere!")
+
+    for numar in numere:
+        if not numar or len(numar) > 200 or any(c not in "0123456789" for c in numar):
+            raise ValueError("Numerele trebuie sa fie naturale, de maximum 200 de cifre!")
+
+    a, b = numere
+
+    print("Suma:", adunare(a, b))
+    print("Produsul:", inmultire(a, b))
+
+except FileNotFoundError:
+    print("Eroare: fisierul numere.txt nu exista!")
+
+except ValueError as eroare:
+    print("Eroare:", eroare)
