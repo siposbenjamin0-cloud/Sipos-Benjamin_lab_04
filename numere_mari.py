@@ -1,14 +1,18 @@
-
 # Cerinta 2 - Adunarea si inmultirea numerelor mari
 
+from pathlib import Path
+
+
+# Adunarea numerelor mari
 def adunare(a, b):
-    a = a.zfill(max(len(a), len(b)))
-    b = b.zfill(len(a))
+    lungime = max(len(a), len(b))
+    a = a.zfill(lungime)
+    b = b.zfill(lungime)
 
     transport = 0
     rezultat = ""
 
-    for i in range(len(a) - 1, -1, -1):
+    for i in range(lungime - 1, -1, -1):
         suma = int(a[i]) + int(b[i]) + transport
         rezultat = str(suma % 10) + rezultat
         transport = suma // 10
@@ -19,6 +23,7 @@ def adunare(a, b):
     return rezultat.lstrip("0") or "0"
 
 
+# Inmultirea numerelor mari
 def inmultire(a, b):
     rezultat = [0] * (len(a) + len(b))
 
@@ -35,19 +40,27 @@ def inmultire(a, b):
 
         rezultat[i] += transport
 
-    return "".join(str(c) for c in rezultat).lstrip("0") or "0"
+    rezultat = "".join(str(c) for c in rezultat)
+
+    return rezultat.lstrip("0") or "0"
 
 
+# Citirea numerelor din fisier
 try:
-    with open("numere.txt", "r") as fisier:
+    cale = Path(__file__).with_name("numere.txt")
+
+    with open(cale, "r", encoding="utf-8") as fisier:
         numere = [linie.strip() for linie in fisier]
 
     if len(numere) != 2:
         raise ValueError("Fisierul trebuie sa contina doua numere!")
 
     for numar in numere:
-        if not numar or len(numar) > 200 or any(c not in "0123456789" for c in numar):
-            raise ValueError("Numerele trebuie sa fie naturale, de maximum 200 de cifre!")
+        if not numar or len(numar) > 200:
+            raise ValueError("Numerele trebuie sa aiba maximum 200 de cifre!")
+
+        if any(c not in "0123456789" for c in numar):
+            raise ValueError("Fisierul trebuie sa contina doar numere naturale!")
 
     a, b = numere
 
